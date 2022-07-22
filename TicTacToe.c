@@ -64,16 +64,14 @@ void printBoard(char board[BOARD_SIZE][BOARD_SIZE])
     int j; // used in inner for loop
 
     // Statements
+    printf("\n-------");
     for (i = 0; i < BOARD_SIZE; i++)
     {
         printf("\n");
         for (j = 0; j < BOARD_SIZE; j++)
         {
-            printf("%c", board[i][j]);
-            if (j < BOARD_SIZE - 1)
-            {
-                printf(" ");
-            }
+            printf(" %c", board[i][j]);
         }
     }
+    printf("\n-------\n");
 }
