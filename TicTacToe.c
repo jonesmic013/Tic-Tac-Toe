@@ -24,7 +24,7 @@ int main (void)
     //do
     //{
     //    /* code */
-    //} while (numMoves < BOARD_SIZE * BOARD_SIZE && winner == 0);
+    //} while (numMoves < BOARD_SIZE * BOARD_SIZE && !winner);
 
     return 0;
     // main
