@@ -10,12 +10,15 @@ void printBoard(char board[BOARD_SIZE][BOARD_SIZE]); // Function Declaration
 int doMoves(char board[BOARD_SIZE][BOARD_SIZE]); // Function Declaration
 int validOption(int num, char board[BOARD_SIZE][BOARD_SIZE]); // Function Declaration
 void placeMove(int num, char c, char board[BOARD_SIZE][BOARD_SIZE]); // Function Declaration
+int checkWinner(int who, char c, char board[BOARD_SIZE][BOARD_SIZE]); // Function Declaration
+void printResults(int winner, char board[BOARD_SIZE][BOARD_SIZE]); // Function Declaration
+void goodbye(); // Function Declaration
 
 int main (void)
 {
     // Local Declarations
     char board[BOARD_SIZE][BOARD_SIZE]; // 2D array for our game board
-    int winner; // winner of the game, 1/2 for player/computer, 0 for tie
+    int winner; // winner of the game, 1/2 for player/computer, 3 for tie
     int numMoves; // total number of moves made on the board
 
     // Statements
@@ -32,11 +35,12 @@ int main (void)
 
         if (numMoves == BOARD_SIZE * BOARD_SIZE && !winner)
         {
-            winner = 2; // meaning it's a tie
+            winner = 3; // meaning it's a tie
         }
     } while (numMoves < BOARD_SIZE * BOARD_SIZE && !winner);
 
-    getchar();
+    printResults(winner, board); // function call
+    goodbye(); // function call
 
     return 0;
     // main
@@ -96,7 +100,7 @@ int doMoves(char board[BOARD_SIZE][BOARD_SIZE])
     int i; // used in outer for loop
     int j; // used in inner for loop
     int choice; // what number the user enters
-    int winner; // if someone has won the game or not
+    int winner; // winner of the game, 1/2 for player/computer, 3 for tie
 
     // Statements
     winner = 0;
@@ -112,22 +116,25 @@ int doMoves(char board[BOARD_SIZE][BOARD_SIZE])
             printf("Please enter a valid option!\n");
         }
     } while (choice > 9 || choice < 1 || !validOption(choice, board));
-    placeMove(choice, 'X', board);
+    placeMove(choice, 'X', board); // function call
+    // check for a winner real quick
+    winner = checkWinner(1, 'X', board); // function call
 
     // computer "random" choice
-    printBoard(board);
-    do
+    if(!winner)
     {
-        choice = rand() % 9 + 1;
-        if (choice > 9 || choice < 1 || !validOption(choice, board))
+        printBoard(board); // function call
+        do
         {
-            printf("DEBUG: Rerolling Computer choice...\n");
-        }
-    } while (choice > 9 || choice < 1 || !validOption(choice, board));
-    printf("Computer chose: %d\n", choice);
-    placeMove(choice, 'O', board);
+            choice = rand() % 9 + 1;
+        } while (choice > 9 || choice < 1 || !validOption(choice, board));
+        printf("Computer chose: %d\n", choice);
+        placeMove(choice, 'O', board); // function call
+        // check for a winner real quick again
+        winner = checkWinner(2, 'O', board); // function call
+    }
 
-    return winner;
+    return winner; // return the winner, if any
 }
 
 int validOption(int num, char board[BOARD_SIZE][BOARD_SIZE])
@@ -179,4 +186,75 @@ void placeMove(int num, char c, char board[BOARD_SIZE][BOARD_SIZE])
             break;
     }
     board[row][col] = c;
+}
+
+int checkWinner(int who, char c, char board[BOARD_SIZE][BOARD_SIZE])
+{
+    // Local Declarations
+    int winner; // winner of the game, 1/2 for player/computer, 3 for tie
+
+    // Statements
+    winner = 0;
+
+    // now check all 8 cases of winning Tic-Tac-Toe
+    if (board[0][0] == c && board[0][1] == c && board[0][2] == c)
+    {
+        winner = who;
+    }
+    if (board[1][0] == c && board[1][1] == c && board[1][2] == c)
+    {
+        winner = who;
+    }
+    if (board[2][0] == c && board[2][1] == c && board[2][2] == c)
+    {
+        winner = who;
+    }
+    if (board[0][0] == c && board[1][0] == c && board[2][0] == c)
+    {
+        winner = who;
+    }
+    if (board[0][1] == c && board[1][1] == c && board[2][1] == c)
+    {
+        winner = who;
+    }
+    if (board[0][2] == c && board[1][2] == c && board[2][2] == c)
+    {
+        winner = who;
+    }
+    if (board[0][0] == c && board[1][1] == c && board[2][2] == c)
+    {
+        winner = who;
+    }
+    if (board[2][0] == c && board[1][1] == c && board[0][2] == c)
+    {
+        winner = who;
+    }
+
+    return winner; // return the winner, if any
+}
+
+void printResults(int winner, char board[BOARD_SIZE][BOARD_SIZE])
+{
+    // Statements
+    printf("\n--------------------");
+    printBoard(board); // function call
+    switch (winner)
+    {
+        case 1: printf("You won! Good job :)");
+            break;
+        case 2: printf("\nYou lost! Better luck next time :(");
+            break;
+        case 3: printf("\nYou tied! Well at least you didn't lose :/");
+            break;
+    }
+    printf("\n--------------------");
+}
+
+void goodbye()
+{
+    // Statements
+    printf("\n\nThanks for playing!\n");
+    printf("Press ENTER to exit.");
+    getchar();
+    getchar();
 }
