@@ -24,9 +24,16 @@ int main (void)
 
     // play the game
     winner = 0;
+    numMoves = 0;
     do
     {
         winner = doMoves(board); // function call
+        numMoves++;
+
+        if (numMoves == BOARD_SIZE * BOARD_SIZE && !winner)
+        {
+            winner = 2; // meaning it's a tie
+        }
     } while (numMoves < BOARD_SIZE * BOARD_SIZE && !winner);
 
     getchar();
@@ -108,16 +115,17 @@ int doMoves(char board[BOARD_SIZE][BOARD_SIZE])
     placeMove(choice, 'X', board);
 
     // computer "random" choice
-    //printBoard(board);
-    //do
-    //{
-    //    choice = rand() % 9 + 1;
-    //    if (choice > 9 || choice < 1 || !validOption(choice, board))
-    //    {
-    //        printf("DEBUG: Rerolling Computer choice...\n");
-    //    }
-    //} while (choice > 9 || choice < 1 || !validOption(choice, board));
-    //printf("Computer chose: %d\n", choice);
+    printBoard(board);
+    do
+    {
+        choice = rand() % 9 + 1;
+        if (choice > 9 || choice < 1 || !validOption(choice, board))
+        {
+            printf("DEBUG: Rerolling Computer choice...\n");
+        }
+    } while (choice > 9 || choice < 1 || !validOption(choice, board));
+    printf("Computer chose: %d\n", choice);
+    placeMove(choice, 'O', board);
 
     return winner;
 }
